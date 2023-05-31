@@ -1,0 +1,21 @@
+
+.cell {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    background-color: #98b8b8;
+    border: 3px solid #778b96;
+    border-top-color: #bdd1db;
+    border-left-color: #bdd1db;
+
+}
+
+.pressed {
+    border-top-color: #778b96;
+    border-left-color: #778b96;
+}
+
+.cell img {
+    width: 20px;
+    height:20px;
+}
