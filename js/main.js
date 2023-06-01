@@ -68,7 +68,8 @@ function buildBoard () {
    return board;
 }
 
-
+//mines are added after first chosen cell (skipNum)
+//minesNegsCount adds 1 to every cell near a mine since we already have all the mines
 function fillMines(skipNum) {
     var rndNums = shuffle(skipNum);
     for (var k=0; k<gLevel.Mines; k++) {
