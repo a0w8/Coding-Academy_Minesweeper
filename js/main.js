@@ -17,11 +17,9 @@ function onInit() {
     var radioButtons = document.querySelectorAll('input[name="difficulty"]');
     for (var i=0; i<radioButtons.length; i++) {
 	if (radioButtons[i].checked) {
-	    console.log('level is :', radioButtons[i].value);
 	    chooseLevel(Number(radioButtons[i].value));
 	}
     }
-    console.log('working');
     gGame.isOn = true;
     gGame.shownCount = 0;
     gGame.markedCount = 0;
@@ -30,26 +28,19 @@ function onInit() {
 }
 
 function chooseLevel(size) {
-    console.log(size);
     switch (size) {
     case 4:
-	console.log('entered');
 	gLevel.SIZE = 4;
 	gLevel.Mines = 2;
 	break;
     case 5:
-	console.log('entered');
 	gLevel.SIZE = 10;
 	gLevel.Mines = 10;
 	break;
     case 6:
 	gLevel.SIZE = 16;
-	console.log('entered');
 	gLevel.Mines = 40;
     }
-    console.log(gLevel.SIZE);
-    console.log(gLevel.Mines);
-	
 }
 
 
@@ -82,9 +73,7 @@ function buildBoard () {
 
 
 function fillMines(skipNum) {
-    console.log(skipNum);
     var rndNums = shuffle(skipNum);
-    console.log(rndNums);
     for (var k=0; k<gLevel.Mines; k++) {
 	var rowI = toIJ(rndNums[k]).i
 	var colJ = toIJ(rndNums[k]).j
@@ -109,6 +98,7 @@ function renderBoard() {
     }
     document.querySelector('.board').innerHTML = strHTML;
 }
+
 
 function shuffle(num) {
     var nums = [];
@@ -138,21 +128,6 @@ function toIJ(num) {
     }
 }
 
-//function negMinesCount(rowI,colJ) {
-//    var count=0;
-//    for (var i=rowI-1; i<rowI+2; i++) {
-//	for (var j=colJ-1; j<colJ+2; j++) {
-//	    if (i===rowI && j===colJ) {
-//		continue;
-//	    }
-//	    if (gBoard[i][j].isMine) {
-//		count++;
-//	    }
-//	}
-//    }
-//    return count;
-//} 
-//
 
 function setMinesNegsCount(board,rowI,colJ) {
     for (var i=rowI-1; i<rowI+2; i++) {
@@ -182,13 +157,9 @@ function onCellClicked(elCell, i , j) {
     }
     gBoard[i][j].isShown = true;
     if (gBoard[i][j].minesAroundCount === 0) {
-	elCell.innerText = gBoard[i][j].minesAroundCount;
-	elCell.classList.add("pressed");
-	gGame.shownCount++;
-	//replace with the following lines later
-	//add to shownCount 
-	//expandShown(board, elCell, i, j);
+	expandShown(i, j);
     }
+
     else {
 	elCell.innerText = gBoard[i][j].minesAroundCount;
 	elCell.classList.add("pressed");
@@ -196,6 +167,35 @@ function onCellClicked(elCell, i , j) {
     }
 	checkGameOver();
 	
+}
+
+function expandShown(rowI, colJ) {
+    var elCell = document.querySelector(`[data-i="${rowI}"][data-j="${colJ}"]`);
+    //check if cell opened during recurssion
+    if (elCell.classList.contains("pressed")){
+	return;
+    }
+    elCell.classList.add("pressed");
+    gGame.shownCount++;
+    for (var i=rowI-1; i<rowI+2; i++) {
+	for (var j=colJ-1; j<colJ+2; j++) {
+	    if (i<0 || i >= gLevel.SIZE || j<0 || j >= gLevel.SIZE || i === rowI && j === colJ) {
+		continue;
+	    }
+	   
+	    if (gBoard[i][j].minesAroundCount === 0) {
+		expandShown(i,j)
+	    }
+	    elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
+	    if (elCell.classList.contains("pressed")) {
+		continue;
+	    }
+	    elCell.innerText = gBoard[i][j].minesAroundCount;
+	    elCell.classList.add("pressed");
+	    gGame.shownCount++;
+
+	}
+    }
 }
 
 
