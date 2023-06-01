@@ -183,13 +183,16 @@ function expandShown(rowI, colJ) {
 		continue;
 	    }
 	   
+	    // if no mines around recurssion 
 	    if (gBoard[i][j].minesAroundCount === 0) {
 		expandShown(i,j)
 	    }
 	    elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
+	    //skip pressed cells, possible because of neighbers loop
 	    if (elCell.classList.contains("pressed")) {
 		continue;
 	    }
+	    //for every cell update values
 	    elCell.innerText = gBoard[i][j].minesAroundCount;
 	    elCell.classList.add("pressed");
 	    gGame.shownCount++;
