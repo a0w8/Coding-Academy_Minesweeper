@@ -1,3 +1,16 @@
+.body {
+    text-align: center;
+}
+
+.emoji img {
+    
+    width: 30px;
+    height: 30px;
+}
+
+.table {
+    margin-left: 43vw
+}
 
 .cell {
     width: 30px;
@@ -12,6 +25,8 @@
 
 .pressed {
     border-top-color: #778b96;
+    border-right-color:#98b8b8; 
+    border-bottom-color:#98b8b8; 
     border-left-color: #778b96;
 }
 

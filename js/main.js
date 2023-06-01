@@ -13,6 +13,8 @@ var gGame = {
 
 
 function onInit() {
+    document.querySelector('.emoji').innerHTML = `<img src="img/happy-smiley.jpg" onclick="onInit()">`;
+    gGame.isOn = true;
     gBoard = buildBoard();
     renderBoard();
 }
@@ -77,6 +79,7 @@ function shuffle(num) {
     
 }
 
+//transform from num to matrix position
 function toIJ(num) {
 	
     var i = (num === 0) ? 0 : Math.floor((num-1)/gLevel.SIZE);
@@ -115,8 +118,9 @@ function setMinesNegsCount(board,rowI,colJ) {
     }
 }
 
+
 function onCellClicked(elCell, i , j) {
-    if (gBoard[i][j].isMarked) {
+    if (!gGame.isOn || gBoard[i][j].isMarked) {
 	return;
     }
     if (gBoard[i][j].isMine) {
@@ -128,43 +132,54 @@ function onCellClicked(elCell, i , j) {
     if (gBoard[i][j].minesAroundCount === 0) {
 	elCell.innerText = gBoard[i][j].minesAroundCount;
 	elCell.classList.add("pressed");
-	gGame.isShown++;
-	checkGameOver();
+	gGame.shownCount++;
 	//replace with the following lines later
-	//add to isShown count
+	//add to shownCount 
 	//expandShown(board, elCell, i, j);
-	//checkGameOver();
     }
     else {
 	elCell.innerText = gBoard[i][j].minesAroundCount;
 	elCell.classList.add("pressed");
-	gGame.isShown++;
-	checkGameOver();
+	gGame.shownCount++;
     }
+	checkGameOver();
 	
 }
 
 
 function onRightClick(elCell, i, j) {
-    if (gBoard[i][j].isShown) {
+    if (!gGame.isOn || gBoard[i][j].isShown) {
 	return;
     }
     if (gBoard[i][j].isMarked) {
-	console.log('entered');
 	gBoard[i][j].isMarked = false;
-	console.log(elCell.innerHTML);
 	elCell.innerHTML= "";
-	console.log(elCell.innerHTML);
 	gGame.markedCount--;
     }
-    gBoard[i][j].isMarked = true;
-    gGame.markedCount++;
-    elCell.innerHTML = `<img src="img/minesweeper-flag.jpg">`
-    checkGameOver();
+    else {
+	gBoard[i][j].isMarked = true;
+	gGame.markedCount++;
+	elCell.innerHTML = `<img src="img/minesweeper-flag.jpg">`
+	checkGameOver();
+    }
 }
 
 
 function checkGameOver() {
-    if (gGame.isShown+gGame.isMarked === gLevel.SIZE**2)
-	console.log('victorious');
+    if (gGame.shownCount+gGame.markedCount === gLevel.SIZE*gLevel.SIZE)
+    document.querySelector('.emoji').innerHTML = `<img src="img/sunglasses-smiley.png" onclick="onInit()">`;
+}
+
+function renderGameOver() {
+    document.querySelector('.emoji').innerHTML = `<img src="img/sad-smiley.png" onclick="onInit()">`;
+    for (var i=0; i<gLevel.SIZE; i++) {
+	for (var j=0; j<gLevel.SIZE; j++) {
+	    if (gBoard[i][j].isMine) {
+		var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
+		elCell.innerHTML = `<img src="img/minesweeper-mine.png">`;
+		elCell.classList.add("pressed");
+	    }
+	}
+    }
+
 }
