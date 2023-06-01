@@ -14,6 +14,7 @@ var gGame = {
 
 
 function onInit() {
+    //maybe move to a function. Initialise size and mines with radio input
     document.querySelector('.emoji').innerHTML = `<img src="img/happy-smiley.jpg" onclick="onInit()">`;
     var radioButtons = document.querySelectorAll('input[name="difficulty"]');
     for (var i=0; i<radioButtons.length; i++) {
@@ -64,18 +65,7 @@ function buildBoard () {
 	    }
 	}
     }
-//    var rndNums = shuffle(3);
-//    console.log(rndNums);
-//    for (var k=0; k<gLevel.Mines; k++) {
-//	var rowI = toIJ(rndNums[k]).i
-//	var colJ = toIJ(rndNums[k]).j
-//	console.log(rowI,colJ);
-//	board[rowI][colJ].isMine = true;
-//	setMinesNegsCount(board, rowI, colJ);
-//    }
-//    console.log(board);
-//
-    return board;
+   return board;
 }
 
 
@@ -252,5 +242,4 @@ function renderGameOver() {
 	    }
 	}
     }
-
 }
