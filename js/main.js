@@ -8,7 +8,8 @@ var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
-    secsPassed: 0
+    secsPassed: 0,
+    lives: 3
 }
 
 
@@ -21,10 +22,12 @@ function onInit() {
 	}
     }
     gGame.isOn = true;
+    gGame.lives = 3;
     gGame.shownCount = 0;
     gGame.markedCount = 0;
     gBoard = buildBoard();
     renderBoard();
+    renderLives();
 }
 
 function chooseLevel(size) {
@@ -41,6 +44,10 @@ function chooseLevel(size) {
 	gLevel.SIZE = 16;
 	gLevel.Mines = 40;
     }
+}
+
+function renderLives() {
+    document.querySelector('.lives span').innerText = gGame.lives;
 }
 
 
@@ -151,9 +158,18 @@ function onCellClicked(elCell, i , j) {
 	return;
     }
     if (gBoard[i][j].isMine) {
-	gGame.isOn = false;
-	renderGameOver();
-	return;
+	if (!gGame.lives) {
+	    gGame.isOn = false;
+	    renderGameOver();
+	    return;
+	}
+	else {
+	    gGame.lives--;
+	    renderLives();
+	    document.querySelector('.lives').style.backgroundColor = '#ad264c';
+	    setTimeout(()=>{document.querySelector('.lives').style.backgroundColor = '#7b88c9'}, 2000);
+	    return;
+	}
     }
     gBoard[i][j].isShown = true;
     if (gBoard[i][j].minesAroundCount === 0) {
