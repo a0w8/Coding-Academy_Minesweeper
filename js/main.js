@@ -14,9 +14,42 @@ var gGame = {
 
 function onInit() {
     document.querySelector('.emoji').innerHTML = `<img src="img/happy-smiley.jpg" onclick="onInit()">`;
+    var radioButtons = document.querySelectorAll('input[name="difficulty"]');
+    for (var i=0; i<radioButtons.length; i++) {
+	if (radioButtons[i].checked) {
+	    console.log('level is :', radioButtons[i].value);
+	    chooseLevel(Number(radioButtons[i].value));
+	}
+    }
+    console.log('working');
     gGame.isOn = true;
+    gGame.shownCount = 0;
+    gGame.markedCount = 0;
     gBoard = buildBoard();
     renderBoard();
+}
+
+function chooseLevel(size) {
+    console.log(size);
+    switch (size) {
+    case 4:
+	console.log('entered');
+	gLevel.SIZE = 4;
+	gLevel.Mines = 2;
+	break;
+    case 5:
+	console.log('entered');
+	gLevel.SIZE = 10;
+	gLevel.Mines = 10;
+	break;
+    case 6:
+	gLevel.SIZE = 16;
+	console.log('entered');
+	gLevel.Mines = 40;
+    }
+    console.log(gLevel.SIZE);
+    console.log(gLevel.Mines);
+	
 }
 
 
@@ -33,19 +66,34 @@ function buildBoard () {
 	    }
 	}
     }
-    var rndNums = shuffle(3);
+//    var rndNums = shuffle(3);
+//    console.log(rndNums);
+//    for (var k=0; k<gLevel.Mines; k++) {
+//	var rowI = toIJ(rndNums[k]).i
+//	var colJ = toIJ(rndNums[k]).j
+//	console.log(rowI,colJ);
+//	board[rowI][colJ].isMine = true;
+//	setMinesNegsCount(board, rowI, colJ);
+//    }
+//    console.log(board);
+//
+    return board;
+}
+
+
+function fillMines(skipNum) {
+    console.log(skipNum);
+    var rndNums = shuffle(skipNum);
     console.log(rndNums);
     for (var k=0; k<gLevel.Mines; k++) {
 	var rowI = toIJ(rndNums[k]).i
 	var colJ = toIJ(rndNums[k]).j
 	console.log(rowI,colJ);
-	board[rowI][colJ].isMine = true;
-	setMinesNegsCount(board, rowI, colJ);
+	gBoard[rowI][colJ].isMine = true;
+	setMinesNegsCount(gBoard, rowI, colJ);
     }
-    console.log(board);
-
-    return board;
 }
+ 
 
 function renderBoard() {
     var strHTML = '';
@@ -90,21 +138,21 @@ function toIJ(num) {
     }
 }
 
-function negMinesCount(rowI,colJ) {
-    var count=0;
-    for (var i=rowI-1; i<rowI+2; i++) {
-	for (var j=colJ-1; j<colJ+2; j++) {
-	    if (i===rowI && j===colJ) {
-		continue;
-	    }
-	    if (gBoard[i][j].isMine) {
-		count++;
-	    }
-	}
-    }
-    return count;
-} 
-
+//function negMinesCount(rowI,colJ) {
+//    var count=0;
+//    for (var i=rowI-1; i<rowI+2; i++) {
+//	for (var j=colJ-1; j<colJ+2; j++) {
+//	    if (i===rowI && j===colJ) {
+//		continue;
+//	    }
+//	    if (gBoard[i][j].isMine) {
+//		count++;
+//	    }
+//	}
+//    }
+//    return count;
+//} 
+//
 
 function setMinesNegsCount(board,rowI,colJ) {
     for (var i=rowI-1; i<rowI+2; i++) {
@@ -120,6 +168,10 @@ function setMinesNegsCount(board,rowI,colJ) {
 
 
 function onCellClicked(elCell, i , j) {
+    if (!gGame.shownCount) {
+	fillMines(i*gLevel.SIZE+j+1);
+    }
+	
     if (!gGame.isOn || gBoard[i][j].isMarked) {
 	return;
     }
